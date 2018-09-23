@@ -1,55 +1,64 @@
-import React, { Component } from 'react';
-import '../styles/App.css';
-import Header from './Header';
-import Widget from './Widget';
-import axios from 'axios';
+import React, { Component } from "react";
+import "../styles/App.css";
+import Header from "./Header";
+import Widget from "./Widget";
+import axios from "axios";
 
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      location: 'Hyderabad, Telangana',
-      displayName: '',
-      weather: '',
-      map: '',
+      location: "Hyderabad,Telangana",
+      displayName: "",
+      weather: "",
+      map: "",
       temp: null,
       maxTemp: null,
       minTemp: null,
       humidity: null,
       wind: null,
       windDeg: null,
-      unitPreference: 'F'
-    }
+      unitPreference: "F"
+    };
 
     this.fetchLocationData = this.fetchLocationData.bind(this);
     this.getPlace = this.getPlace.bind(this);
     this.getMap = this.getMap.bind(this);
     this.updateUnitPreference = this.updateUnitPreference.bind(this);
   }
-  
+
   updateUnitPreference(e) {
     const unitPref = e.target.value;
     this.setState({
       unitPreference: unitPref
-    })
+    });
   }
 
   getMap(displayName) {
-    const map = `https://maps.googleapis.com/maps/api/staticmap?center=${encodeURIComponent(displayName)}&zoom=11&size=1200x400&maptype=satellite&key=${process.env.REACT_APP_STATIC_MAP_API}`;
-    
+    const map = `https://maps.googleapis.com/maps/api/staticmap?center=${encodeURIComponent(
+      displayName
+    )}&zoom=11&size=1200x400&maptype=satellite&key=${
+      process.env.REACT_APP_STATIC_MAP_API
+    }`;
+
     this.setState({
       map
     });
   }
 
-  async fetchLocationData(locationName = this.state.location, unitPreference = this.state.unitPreference) {
+  async fetchLocationData(
+    locationName = this.state.location,
+    unitPreference = this.state.unitPreference
+  ) {
     // console.log(this.state.unitPreference)
-    
+
     if (locationName) {
-      const unit = ((unitPreference === 'F') ? 'imperial' : 'metric');
-      const url = `http://api.openweathermap.org/data/2.5/weather?q=${locationName}&units=${unit}&mode=json&appid=${process.env.REACT_APP_WEATHER_API}`
-      const response = await axios.get(url).then(function (response) {
+      const unit = unitPreference === "F" ? "imperial" : "metric";
+      const url = `http://api.openweathermap.org/data/2.5/weather?q=${locationName}&units=${unit}&mode=json&appid=${
+        process.env.REACT_APP_WEATHER_API
+      }`;
+      const response = await axios.get(url).then(function(response) {
         return response.data;
       });
 
@@ -67,15 +76,20 @@ class App extends Component {
   }
 
   async getPlace(locationName) {
-    const locationDetails = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(locationName)}&key=${process.env.REACT_APP_GOOGLE_API}`)
-    .then(function(res) {
-      return res.data;
-    })
+    const locationDetails = await axios
+      .get(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+          locationName
+        )}&key=${process.env.REACT_APP_GOOGLE_API}`
+      )
+      .then(function(res) {
+        return res.data;
+      });
 
     this.setState({
-      displayName: locationDetails.results[0].formatted_address,
-    })
-  } 
+      displayName: locationDetails.results[0].formatted_address
+    });
+  }
 
   componentWillMount() {
     this.fetchLocationData();
@@ -88,14 +102,21 @@ class App extends Component {
     }
 
     if (this.state.displayName !== nextState.displayName) {
-      this.getMap(nextState.displayName)
+      this.getMap(nextState.displayName);
     }
   }
 
   render() {
     return (
       <div className="App">
-        <Header fetchLocationData={this.fetchLocationData} updateUnitPreference={this.updateUnitPreference} getPlace={this.getPlace} unit={this.state.unitPreference} displayName={this.state.displayName} map={this.state.map} />
+        <Header
+          fetchLocationData={this.fetchLocationData}
+          updateUnitPreference={this.updateUnitPreference}
+          getPlace={this.getPlace}
+          unit={this.state.unitPreference}
+          displayName={this.state.displayName}
+          map={this.state.map}
+        />
         <Widget weather={this.state} />
       </div>
     );
