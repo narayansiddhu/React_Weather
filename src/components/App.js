@@ -55,7 +55,7 @@ class App extends Component {
 
     if (locationName) {
       const unit = unitPreference === "F" ? "imperial" : "metric";
-      const url = `http://api.openweathermap.org/data/2.5/weather?q=${locationName}&units=${unit}&mode=json&appid=${
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${locationName}&units=${unit}&mode=json&appid=${
         process.env.REACT_APP_WEATHER_API
       }`;
       const response = await axios.get(url).then(function(response) {
