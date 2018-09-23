@@ -9,7 +9,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-      location: 'Austin, TX',
+      location: 'Hyderabad, Telangana',
       displayName: '',
       weather: '',
       map: '',
@@ -48,7 +48,7 @@ class App extends Component {
     
     if (locationName) {
       const unit = ((unitPreference === 'F') ? 'imperial' : 'metric');
-      const url = `http://api.openweathermap.org/data/2.5/weather?q=${locationName},us&units=${unit}&mode=json&appid=${process.env.REACT_APP_WEATHER_API}`
+      const url = `http://api.openweathermap.org/data/2.5/weather?q=${locationName}&units=${unit}&mode=json&appid=${process.env.REACT_APP_WEATHER_API}`
       const response = await axios.get(url).then(function (response) {
         return response.data;
       });
